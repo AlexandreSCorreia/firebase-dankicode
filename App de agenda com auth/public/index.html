@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Projeto #1: App de agenda com auth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    form,
+    .login_body,
+    .login_header,
+    .login_footer,
+    .tarefa_body {
+      width: 100%;
+      min-width: 350px;
+      max-width: 500px;
+    }
+
+    body {
+      width: 100vw;
+      min-height: 100vh;
+      background-color: #F4F6FA;
+    }
+
+    .login {
+      width: 30%;
+      padding: 10px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .login .login_header {
+      margin-bottom: 20px;
+      text-transform: capitalize;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .login .login_body,
+    .tarefa .tarefa_body {
+      background-color: #fff;
+      border: 1px solid #d9d9d9;
+      border-radius: .2rem;
+      box-shadow: 0px 7px 15px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
+    }
+
+    .login .login_body form {
+      padding: 10px 20px;
+    }
+
+    .login .login_body .title {
+      padding-top: 30px;
+      padding-bottom: 10px;
+      text-align: center;
+      font-size: 14px;
+      color: #232e3c;
+    }
+
+    .login form .input {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .login form .input label {
+      margin-bottom: 5px;
+    }
+
+    .login form .input input {
+      width: 100%;
+      height: 50px;
+      padding-left: 10px;
+      line-height: 25px;
+      border: none;
+      outline: none;
+      border: 1px solid #a3a1a1;
+      border-radius: .4rem;
+
+    }
+
+    .login form .btn {
+      display: flex;
+      justify-content: end;
+    }
+
+    .login form .btn button,
+    .tarefa .tarefa_body .form-cadastro-tarefa .btn button {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      background-color: #1D60B0;
+      color: white;
+      padding: 15px 40px;
+      border-radius: .3rem;
+      cursor: pointer;
+    }
+
+    .login form .btn button:hover {
+      background-color: #164988;
+    }
+
+
+    .login .login_footer {
+      text-align: center;
+      font-size: 18px;
+    }
+
+
+    .container_login {
+      display: none;
+    }
+
+    .container_login {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .container_login .menu {
+      width: 100%;
+      height: 80px;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgb(117, 116, 116);
+    }
+
+    .tarefa {
+      padding: 10px;
+      margin-bottom: 40px;
+    }
+
+    .tarefa .tarefa_header,
+    .lista_tarefas_header {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .tarefa .tarefa_header h2,
+    .lista_tarefas_header h2 {
+      color: #232e3c;
+    }
+
+    .tarefa .tarefa_body {
+      width: 30%;
+      background-color: white;
+      margin: 0 auto;
+
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa .input {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa .input label {
+      margin-bottom: 5px;
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa .input textarea,
+    .tarefa .tarefa_body .form-cadastro-tarefa .input input {
+      width: 100%;
+      height: 40px;
+      border: none;
+      outline: none;
+      border: 1px solid #a3a1a1;
+      line-height: 20px;
+      font-size: 16px;
+      padding-left: 10px;
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa .input textarea {
+      padding-left: 5px;
+      min-height: 100px;
+      max-width: 100%;
+      max-height: 200px;
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa .btn button {
+      background-color: #218838;
+    }
+
+    .tarefa .tarefa_body .form-cadastro-tarefa .btn button:hover {
+      background-color: rgb(36, 121, 36);
+    }
+
+    .lista_tarefas_body {
+      display: flex;
+      justify-content: center;
+    }
+
+    .tarefas_table {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 60%;
+    }
+
+    .tarefas_table td,
+    .tarefas_table th {
+      border: 1px solid #ddd;
+      padding: 8px;
+
+    }
+
+    .tarefas_table td:last-child {
+      text-align: center;
+    }
+
+    .tarefas_table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .tarefas_table tr:hover {
+      background-color: #ddd;
+    }
+
+    .tarefas_table th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #222;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login">
+    <div class="login_header">
+      <h2>LOGO</h2>
+    </div>
+    <!--login_header-->
+
+    <div class="login_body">
+
+      <div class="title">
+        <h2>Faça login na sua conta</h2>
+      </div>
+
+      <form class="login-form">
+        <div class="input">
+          <label for="email">Endereço de e-mail:</label>
+          <input tabindex="1" type="email" name="email" id="email" required>
+        </div>
+        <div class="input">
+          <div style="display: flex; justify-content: space-between; text-align: center;">
+            <label for="password">Senha:</label>
+            <a href="#" tabindex="6">Esqueci a minha senha</a>
+          </div>
+          <input tabindex="2" type="password" name="password" id="password" required>
+        </div>
+        <div style="margin-bottom: 10px;">
+          <input tabindex="3" type="checkbox" name="lembrar" id="lembrar">
+          <label for="lembrar">Mantenha me conectado</label>
+        </div>
+        <div class="btn">
+          <button tabindex="4" type="submit">Entrar</button>
+        </div>
+      </form>
+    </div>
+    <!--login_body-->
+
+    <div class="login_footer">
+      <p>
+        Ainda não tem conta? <a href="#" tabindex="5">Inscrever-se</a>
+      </p>
+    </div>
+    <!--login_footer-->
+
+  </div>
+  <!--login-->
+
+
+  <main class="container_login">
+    <div class="menu">
+      <div class="logo">
+        <h2>LOGO</h2>
+      </div>
+      <div class="options">
+        <a href="javascript:void(0)" id="sair">Sair</a>
+      </div>
+    </div>
+    <!--menu-->
+    <div class="tarefa">
+      <div class="tarefa_header">
+        <h2>Cadastrar Tarefa</h2>
+      </div>
+
+      <div class="tarefa_body">
+        <form action="" class="form-cadastro-tarefa">
+          <div class="input">
+            <label for="tarefa">Tarefa:</label>
+            <textarea name="tarefa" min="3" maxlength="2000" required></textarea>
+          </div>
+          <div class="input">
+            <label for="datetime">Data e Hora</label>
+            <input type="datetime-local" name="datetime" required />
+          </div>
+          <div class="btn">
+            <button tabindex="4" type="submit">Cadastrar Tarefa</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <div class="lista_tarefas">
+      <div class="lista_tarefas_header">
+        <h2>Tarefas Cadastradas</h2>
+      </div>
+      <div class="lista_tarefas_body">
+        <table class="tarefas_table">
+          <thead>
+            <th>Tarefa</th>
+            <th style="text-align: center;">Data/Hora</th>
+            <th style="text-align: center;">Ação</th>
+          </thead>
+          <tbody id="tarefas_list">
+            <tr>
+              <td>Lavar Roupa</td>
+              <td style="width: 18%; text-align: center;">26/02/2022 17:46:15</td>
+              <td style="width: 30%;">
+                <a href="javascript:void(0)"
+                  style="padding: 10px 20px; color: #222; background-color: #E0A800; display: inline-block; font-weight: 500;">Editar</a>
+                <a href="javascript:void(0)"
+                  style="padding: 10px 20px; color: #FFF; background-color: #C82333; display: inline-block; font-weight: 500;">Remover</a>
+                <a href="javascript:void(0)"
+                  style="padding: 10px 20px; color: #FFF; background-color: #138496; display: inline-block; font-weight: 500;">Visualizar</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+
+  <script type="module">
+
+
+
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, getIdToken } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, where, doc, orderBy, deleteDoc} from "https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore.js";
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+     
+    };
+
+    // Initialize Firebase
+    const firebase = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    //começamos aqui
+    let usuario = null;
+
+
+    //add listenner in form
+    const form_login = document.querySelector('form.login-form');
+    form_login.addEventListener('submit', function (e) {
+      //ao enviar o formulario não atualiar a pagina
+      e.preventDefault();
+
+      //pegando dados do form
+      let email = document.querySelector('[name=email]').value;
+      let password = document.querySelector('[name=password]').value;
+
+      console.log("Email: ", email);
+      console.log("Senha: ", password);
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          usuario = userCredential.user;
+          document.querySelector('.login').style.display = 'none';
+          document.querySelector('.container_login').style.display = 'block';
+          console.log(usuario);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorMessage);
+          console.log(errorMessage);
+        });
+
+    });
+
+    const option_exit = document.querySelector('#sair');
+    option_exit.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        // Sign-out successful.
+        usuario = null;
+        document.querySelector('.container_login').style.display = 'none';
+        document.querySelector('.login').style.display = 'block';
+        form_login.reset();
+      }).catch((error) => {
+        // An error happened.
+        alert(error);
+      });
+    });
+
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        usuario = user;
+        document.querySelector('.login').style.display = 'none';
+        document.querySelector('.container_login').style.display = 'block';
+        console.log(user.email);
+
+        const q = query(collection(db, "tarefa"), where("userId", "==", usuario.uid));
+
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+          let list = document.querySelector("#tarefas_list");
+          list.innerHTML = "";
+          /*  querySnapshot.docs.map((value)=>{
+              list.innerHTML += `
+           
+              <tr>
+                <td>${value.data().tarefa}</td>
+                <td style="width: 18%; text-align: center;"> ${value.data().datetime}</td>
+                <td style="width: 30%;">
+                  <a  href="javascript:void(0)"
+                    style="padding: 10px 20px; color: #222; background-color: #E0A800; display: inline-block; font-weight: 500;">Editar</a>
+                  <a tarefa-id="" href="javascript:void(0)"
+                    style="padding: 10px 20px; color: #FFF; background-color: #C82333; display: inline-block; font-weight: 500;">Remover</a>
+                  <a href="javascript:void(0)"
+                    style="padding: 10px 20px; color: #FFF; background-color: #138496; display: inline-block; font-weight: 500;">Visualizar</a>
+                </td>
+              </tr>
+              `;
+            });*/
+          //Ordenar lista desc
+          let lista_tarefas = querySnapshot.docs;
+          lista_tarefas = lista_tarefas.sort(function (a, b) {
+            if (a.data().datetime < b.data().datetime) {
+              return -1;
+            } else {
+              return +1;
+            }
+          });
+          //reenderizar lista
+          lista_tarefas.map((value) => {
+            list.innerHTML += `
+         
+            <tr>
+              <td>${value.data().tarefa}</td>
+              <td style="width: 18%; text-align: center;"> ${new Date(value.data().datetime).toLocaleString()}</td>
+              <td style="width: 30%;">
+                <a href="javascript:void(0)"
+                  style="padding: 10px 20px; color: #222; background-color: #E0A800; display: inline-block; font-weight: 500;">Editar</a>
+                <a href="javascript:void(0) " tarefa-id="${value.id}" class="destroy"
+                  style="padding: 10px 20px; color: #FFF; background-color: #C82333; display: inline-block; font-weight: 500;">Remover</a>
+                <a href="javascript:void(0)"
+                  style="padding: 10px 20px; color: #FFF; background-color: #138496; display: inline-block; font-weight: 500;">Visualizar</a>
+              </td>
+            </tr>
+            `;
+          });
+
+          let excluirTarefas = document.querySelectorAll(".destroy");
+          excluirTarefas.forEach(element => {
+            element.addEventListener('click', async (e) => {
+              e.preventDefault();
+              const id_tarefa = element.getAttribute('tarefa-id');
+              await deleteDoc(doc(db, "tarefa", id_tarefa));
+            });
+          });
+        });
+      }
+    });
+
+    const form_cadastro_tarefa = document.querySelector('.form-cadastro-tarefa');
+    form_cadastro_tarefa.addEventListener('submit', async function (e) {
+      //ao enviar o formulario não atualiar a pagina
+      e.preventDefault();
+
+      //pegando dados do form
+      let tarefa = document.querySelector('.form-cadastro-tarefa [name=tarefa]').value;
+      let datetime = document.querySelector('.form-cadastro-tarefa [name=datetime]').value;
+
+
+      let dataAtual = new Date().getTime();
+      if (dataAtual > new Date(datetime).getTime()) {
+        alert("Você informou uma data no passado!");
+      } else if (tarefa == "" || datetime == "") {
+        alert("Para cadastrar uma tarefa você precisa preencher os dados no formulario!!");
+      } else {
+        try {
+          const docRef = await addDoc(collection(db, "tarefa"), {
+            tarefa: tarefa,
+            datetime: datetime,
+            userId: usuario.uid
+          });
+          form_cadastro_tarefa.reset();
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+      }
+
+    });
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>

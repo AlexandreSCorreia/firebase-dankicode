@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Projeto #2: App gestão de clientes com painel de admin</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- ===== FONTAWESOME ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+        crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!--==== CSS ==== -->
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            color: #222;
+            user-select: none;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+            background-color: #F4F6FA;
+        }
+
+
+        .menu {
+            width: 100%;
+            height: 80px;
+            background-color: #222;
+            padding: 10px;
+        }
+
+        .menu .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto;
+        }
+
+        .menu .logo img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-position: center;
+            background-size: contain;
+        }
+
+        .cliente {
+            width: 100%;
+            max-width: 500px;
+
+            margin: 0 auto;
+        }
+
+        .cliente .cliente_comprovante_header {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cliente .cliente_comprovante_body {
+            width: 100%;
+
+            padding: 20px;
+        }
+
+        .cliente .cliente_comprovante_body form {
+            width: 100%;
+
+            padding: 20px;
+            border: none;
+
+            box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.2);
+            border-radius: .2rem;
+        }
+
+        .cliente .cliente_comprovante_body form .input {
+            width: 100%;
+            margin-bottom: .5rem;
+
+
+            border-radius: .2rem;
+        }
+
+        .cliente .cliente_comprovante_body form .input label,
+        .cliente .cliente_comprovante_body form .input span {
+            display: block;
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: .3rem;
+        }
+
+        .cliente .cliente_comprovante_body form .input textarea {
+            width: 90%;
+            height: 150px;
+            max-height: 200px;
+            margin: 0 auto;
+            display: block;
+            border: none;
+            outline: none;
+            border: 1px solid #d9d9d9;
+            border-radius: .4rem;
+            padding: 10px;
+            font-size: 1rem;
+        }
+
+
+        input[type='file'] {
+            display: none
+        }
+
+        /*Aparência do selector, nesse caso utilizando uma label */
+        label[for='arquivo'] {
+            color: #9A4DAD;
+
+            height: 100px;
+            border-style: dotted;
+            border-width: 2px;
+            border-radius: .4rem;
+
+            outline: none;
+            cursor: pointer;
+        }
+
+        label[for='arquivo'] i {
+            display: inline-block;
+            font-size: 2.5rem;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #9A4DAD;
+        }
+
+
+
+        .btn_sub button {
+            border: none;
+            outline: none;
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+            width: 90%;
+            margin: 0 auto;
+            background-image: linear-gradient(to right, #834d9b 0%, #d04ed6 51%, #834d9b 100%);
+            cursor: pointer;
+        }
+
+        .btn_sub button:hover {
+            background-position: right center;
+            /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .alert {
+            background: #93F9B9;
+            padding: 20px 40px;
+            min-width: 420px;
+            position: absolute;
+            right: 0;
+            top: 90px;
+            border-radius: 4px;
+            border-left: 8px solid #1D976C;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .alert.showAlert {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .alert.show {
+            animation: show_slide 1s ease forwards;
+        }
+
+        @keyframes show_slide {
+            0% {
+                transform: translateX(100%);
+            }
+
+            40% {
+                transform: translateX(-10%);
+            }
+
+            80% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-10px);
+            }
+        }
+
+        .alert.hide {
+            animation: hide_slide 1s ease forwards;
+        }
+
+        @keyframes hide_slide {
+            0% {
+                transform: translateX(-10px);
+            }
+
+            40% {
+                transform: translateX(0%);
+            }
+
+            80% {
+                transform: translateX(-10%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .alert .fa-exclamation-circle {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #1D976C;
+            font-size: 30px;
+        }
+
+        .alert .msg {
+            padding: 0 20px;
+            font-size: 18px;
+            color: #1D976C;
+        }
+
+        .alert .close-btn {
+            position: absolute;
+            right: 0px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #93F9B9;
+            padding: 20px 18px;
+            cursor: pointer;
+        }
+
+        .alert .close-btn:hover {
+            background: #93F9B9;
+        }
+
+        .alert .close-btn .fas {
+            color: #1D976C;
+            font-size: 22px;
+            line-height: 40px;
+        }
+
+        .admin {
+            width: 100%;
+            height: calc(100vh - 80px);
+        }
+
+        .admin a.google-btn {
+            display: inline-block;
+            position: relative;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            display: inline-block;
+            border-radius: .4rem;
+            text-decoration: none;
+            background-image: linear-gradient(to right, #000000 0%, #434343 51%, #000000 100%);
+        }
+
+        .admin a:hover.google-btn {
+            background-position: right center;
+            /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .admin a.google-btn img {
+            padding-right: 0.5rem;
+        }
+
+        .admin a.google-btn span {
+            margin: 0;
+            color: #FFFFFF !important;
+        }
+
+        .container_solicitacoes_single {
+            display: inline-block;
+            padding: 20px;
+            min-width: 400px;
+            border-radius: .4rem;
+            border: 1px solid #d9d9d9;
+            background-color: #fff;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+            text-align: start;
+        }
+
+        .container_solicitacoes {
+            width: 100%;
+            max-width: 1280px;
+            height: 450px;
+            overflow: auto;
+            border: 1px solid #d9d9d9;
+            margin: 0 auto;
+            box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.2);
+            border-radius: .4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="menu">
+        <div class="logo">
+            <img src="help.png" alt="">
+        </div>
+    </div>
+    <!--menu-->
+
+    <div class="cliente" style="display: none;">
+
+        <div class="cliente_comprovante_header">
+            <h2>Deseja fazer uma solicitação?</h2>
+        </div>
+
+        <div class="cliente_comprovante_body">
+
+            <form action="" id="form_cliente" method="post">
+                <div class="input">
+                    <label for="comprovante">Descrição da solicitação:</label>
+                    <textarea name="comprovante" id="comprovante" min="3" maxlength="2000"
+                        placeholder="Escreva aqui a sua solicitação.." required></textarea>
+                </div>
+                <div class="input mb-2">
+                    <label for="arquivo"><i class="fas fa-cloud-upload-alt"></i></label>
+                    <input type="file" name="arquivo" id="arquivo" required />
+                    <span id="arquivo_select"></span>
+                </div>
+                <div class="btn_sub text-center" id="progress">
+                    <button type="submit">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!--cliente-->
+
+
+
+    <div class="admin" style="display: none;">
+        <a class="google-btn" href="javascript:void(0)" id="login_google">
+            <img src="google.svg" alt="" srcset="">
+            <span>Faça login com o Google</span>
+        </a>
+
+        <div style="display: none;" class="listar_solicitacoes text-center mt-4">
+            <h2>Útimas solicitações: </h2>
+            <div class="container_solicitacoes">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="alert hide">
+        <span class="fas fa-exclamation-circle"></span>
+        <span class="msg">Enviado com sucesso!!</span>
+        <div class="close-btn">
+            <span class="fas fa-times"></span>
+        </div>
+    </div>
+
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+        </script>
+
+    <script type="module">
+
+
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-app.js";
+        import { getAuth, signInWithPopup, signOut, onAuthStateChanged, getIdToken, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, doc, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.6.7/firebase-storage.js";
+
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          
+        };
+
+        // Initialize Firebase
+        const firebase = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getFirestore();
+        const storage = getStorage(firebase);
+        const provider = new GoogleAuthProvider();
+
+
+
+        //começamos aqui
+        let cliente = null;
+
+        const arquivo = document.querySelector('#arquivo');
+        const arquivo_select = document.getElementById('arquivo_select');
+        const label = document.querySelector("label[for='arquivo']");
+        const icon = document.querySelector("label[for='arquivo'] i");
+        const form_cliente = document.querySelector('#form_cliente');
+        const alert = document.querySelector('.alert');
+
+        arquivo.addEventListener('change', function (e) {
+            console.log(arquivo.files[0]);
+            arquivo_select.innerHTML = `<strong>Arquivo selecionado:</strong> ${arquivo.files[0].name}`;
+            label.style.color = "#02AAB0";
+            icon.style.color = "#02AAB0";
+        });
+
+
+        const close_alert = document.querySelector('.close-btn');
+        close_alert.addEventListener('click', (e) => {
+            alert.classList.remove("show");
+            alert.classList.add("hide");
+        });
+
+
+        form_cliente.addEventListener('submit', async function (e) {
+            //ao enviar o formulario não atualiar a pagina
+            e.preventDefault();
+
+            //pegando dados do form
+            let comprovante = document.querySelector('#form_cliente [name=comprovante]');
+            let arquivo = document.querySelector('#form_cliente [name=arquivo]');
+
+            if (comprovante.value == "" || arquivo.files[0] == undefined || arquivo.files[0].name == "") {
+                alert("Todos os campos são obrigatorios!");
+            } else {
+
+                comprovante.disabled = true;
+                arquivo.disabled = true;
+
+                const progress_form = document.querySelector('#progress');
+                const guardar_botoes = progress_form.innerHTML;
+
+
+                progress_form.innerHTML = `<div class="spinner-border text-dark" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>`;
+
+                // Create a reference to 'images/mountains.jpg'
+                const mountainImagesRef = ref(storage, 'documentos/' + arquivo.files[0].name);
+                const uploadTask = uploadBytesResumable(mountainImagesRef, arquivo.files[0]);
+                uploadTask.on('state_changed',
+                    (snapshot) => {
+                        // Observe state change events such as progress, pause, and resume
+                        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                        switch (snapshot.state) {
+                            case 'paused':
+                                console.log('Upload is paused');
+                                break;
+                            case 'running':
+                                console.log('Upload is running');
+                                break;
+                        }
+                    },
+                    (error) => {
+                        // Handle unsuccessful uploads
+                        console.log(error);
+
+                    },
+                    () => {
+
+                        // Handle successful uploads on complete
+                        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+                            console.log('File available at', downloadURL);
+                            const id_result = await store(comprovante.value, downloadURL);
+                            console.log("Document written with ID: ", id_result);
+                            form_cliente.reset();
+                            progress_form.innerHTML = guardar_botoes;
+                            arquivo_select.innerHTML = '';
+                            label.style.color = "#9A4DAD";
+                            icon.style.color = "#9A4DAD";
+                            comprovante.removeAttribute('disabled');
+                            arquivo.removeAttribute('disabled');
+
+                            alert.classList.add("show");
+                            alert.classList.remove("hide");
+                            alert.classList.add("showAlert");
+
+                            setTimeout(function () {
+                                alert.classList.remove("show");
+                                alert.classList.add("hide");
+                            }, 5000);
+
+
+                        });
+                    }
+
+                );
+
+            }//end else
+
+
+        });//end listenner
+
+
+
+
+        async function store(comp, url) {
+            try {
+                const docRef = await addDoc(collection(db, "documentos"), {
+                    descricao: comp,
+                    arquivoURL: url
+                });
+
+
+                return docRef.id;
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        }
+
+
+        const login_google = document.querySelector('#login_google');
+        login_google.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    // The signed-in user info.
+                    const user = result.user;
+                    console.log(user);
+                    // ...
+                }).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // The email of the user's account used.
+                    const email = error.email;
+                    // The AuthCredential type that was used.
+                    const credential = GoogleAuthProvider.credentialFromError(error);
+                    // ...
+                });
+        });
+
+
+
+
+
+
+        //puxar pedidos do firestore
+
+        const container_solicitacoes = document.querySelector('.container_solicitacoes');
+        onSnapshot(query(collection(db, "documentos")), (querySnapshot) => {
+            // console.log(querySnapshot.docs);
+            container_solicitacoes.innerHTML = "";
+            querySnapshot.docs.map((value) => {
+                console.log(value.data().descricao);
+                container_solicitacoes.innerHTML += `
+                    <div class="container_solicitacoes_single">
+                        <p><strong>Descrição:</strong></br>${value.data().descricao}</p>
+                        <p><strong>Arquivo enviado:</strong> <a href="${value.data().arquivoURL}" target="_blank">Clique Aqui</a></p>
+                    </div>
+                `;
+            });
+
+
+        });
+
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const myParams = urlParams.get("admin");
+
+
+        if (myParams != null) {
+            //Entrar na area administrativa
+            const adminArea = document.querySelector('.admin');
+            adminArea.style.display = "block";
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("Captura: " + user.email);
+                    if (user.email == "exemple@gmail.com") {
+                        console.log("Logado como admin");
+                        login_google.style.display = "none";
+                        document.querySelector('.listar_solicitacoes').style.display = "block";
+                    } else {
+                        alert("Esse e-mail não é autorizado!");
+                    }
+
+                } else {
+                    console.log("Não tem ninguem logado!");
+                }
+            });
+        } else {
+            //user
+            const clienteArea = document.querySelector('.cliente');
+            clienteArea.style.display = "block";
+        }
+    </script>
+
+
+
+</body>
+
+</html>
